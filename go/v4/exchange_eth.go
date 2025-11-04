@@ -81,8 +81,8 @@ type CancelMessage struct {
 // cancelByCloid
 // {"type":"cancelByCloid","cancels":[{"asset":3,"cloid":"1111111111"}]}
 type CancelByCloid struct {
-	Asset int `mapstructure:"asset" msgpack:"asset"`
-	Cloid int `mapstructure:"cloid" msgpack:"cloid"`
+	Asset int    `mapstructure:"asset" msgpack:"asset"`
+	Cloid string `mapstructure:"cloid" msgpack:"cloid"`
 }
 type CancelByCloidMessage struct {
 	Type    string          `mapstructure:"type" msgpack:"type"`
