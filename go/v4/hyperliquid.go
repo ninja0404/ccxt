@@ -2008,8 +2008,6 @@ func (this *HyperliquidCore) CreateOrdersRequest(orders interface{}, optionalArg
 		var stopLoss interface{} = this.SafeValue(orderParams, "stopLoss")
 		var takeProfit interface{} = this.SafeValue(orderParams, "takeProfit")
 		var isTrigger interface{} = (IsTrue(stopLoss) || IsTrue(takeProfit))
-		// save clientOrderId for TP/SL orders
-		var clientOrderId interface{} = this.SafeString2(orderParams, "clientOrderId", "client_id")
 		orderParams = this.Omit(orderParams, []interface{}{"stopLoss", "takeProfit"})
 		var mainOrderObj interface{} = this.CreateOrderRequest(symbol, typeVar, side, amount, price, orderParams)
 		AppendToArray(&orderReq, mainOrderObj)
@@ -2029,22 +2027,15 @@ func (this *HyperliquidCore) CreateOrdersRequest(orders interface{}, optionalArg
 			} else {
 				triggerOrderSide = "buy"
 			}
-			// build the params of the TP/SL order and add it to the TP/SL order if the master order has a clientOrderId
-			var tpslParams interface{} = orderParams
-			if IsTrue(!IsEqual(clientOrderId, nil)) {
-				tpslParams = this.Extend(orderParams, map[string]interface{}{
-					"clientOrderId": clientOrderId,
-				})
-			}
 			if IsTrue(!IsEqual(takeProfit, nil)) {
-				var orderObj interface{} = this.CreateOrderRequest(symbol, takeProfitOrderType, triggerOrderSide, amount, takeProfitOrderLimitPrice, this.Extend(tpslParams, map[string]interface{}{
+				var orderObj interface{} = this.CreateOrderRequest(symbol, takeProfitOrderType, triggerOrderSide, amount, takeProfitOrderLimitPrice, this.Extend(orderParams, map[string]interface{}{
 					"takeProfitPrice": takeProfitOrderTriggerPrice,
 					"reduceOnly":      true,
 				}))
 				AppendToArray(&orderReq, orderObj)
 			}
 			if IsTrue(!IsEqual(stopLoss, nil)) {
-				var orderObj interface{} = this.CreateOrderRequest(symbol, stopLossOrderType, triggerOrderSide, amount, stopLossOrderLimitPrice, this.Extend(tpslParams, map[string]interface{}{
+				var orderObj interface{} = this.CreateOrderRequest(symbol, stopLossOrderType, triggerOrderSide, amount, stopLossOrderLimitPrice, this.Extend(orderParams, map[string]interface{}{
 					"stopLossPrice": stopLossOrderTriggerPrice,
 					"reduceOnly":    true,
 				}))
