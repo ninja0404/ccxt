@@ -52,12 +52,13 @@ type OrderKind struct {
 }
 
 type OrderHyperliquid struct {
-	A int       `mapstructure:"a" msgpack:"a"`
-	B bool      `mapstructure:"b" msgpack:"b"`
-	P string    `mapstructure:"p" msgpack:"p"`
-	S string    `mapstructure:"s" msgpack:"s"`
-	R bool      `mapstructure:"r" msgpack:"r"`
-	T OrderKind `mapstructure:"t" msgpack:"t"`
+	A int       `mapstructure:"a" msgpack:"a"` // asset
+	B bool      `mapstructure:"b" msgpack:"b"` // isBuy
+	P string    `mapstructure:"p" msgpack:"p"` // price
+	S string    `mapstructure:"s" msgpack:"s"` // size
+	R bool      `mapstructure:"r" msgpack:"r"` // reduceOnly
+	T OrderKind `mapstructure:"t" msgpack:"t"` // type
+	C string    `mapstructure:"c" msgpack:"c"` // cloid (client order id)
 }
 
 type OrderMessage struct {
