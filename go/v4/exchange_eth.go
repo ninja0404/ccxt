@@ -78,6 +78,17 @@ type CancelMessage struct {
 	Cancels []Cancel `mapstructure:"cancels" msgpack:"cancels"`
 }
 
+// cancelByCloid
+// {"type":"cancelByCloid","cancels":[{"asset":3,"cloid":"1111111111"}]}
+type CancelByCloid struct {
+	Asset int `mapstructure:"asset" msgpack:"asset"`
+	Cloid int `mapstructure:"cloid" msgpack:"cloid"`
+}
+type CancelByCloidMessage struct {
+	Type    string          `mapstructure:"type" msgpack:"type"`
+	Cancels []CancelByCloid `mapstructure:"cancels" msgpack:"cancels"`
+}
+
 // Transfer
 // {"hyperliquidChain":"Mainnet","signatureChainId":"0x66eee","type":"usdClassTransfer","amount":"100000","toPerp":false,"nonce":1737458035944}
 type TransferMessage struct {
@@ -375,6 +386,20 @@ func (this *Exchange) Packb(data interface{}) []uint8 {
 		return packed
 	case "cancel":
 		var cancelMsg CancelMessage
+
+		err := mapstructure.Decode(converted, &cancelMsg)
+		if err != nil {
+			panic(err)
+		}
+
+		packed, err := msgpack.Marshal(cancelMsg)
+
+		if err != nil {
+			panic(err)
+		}
+		return packed
+	case "cancelByCloid":
+		var cancelMsg CancelByCloidMessage
 
 		err := mapstructure.Decode(converted, &cancelMsg)
 		if err != nil {
